@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Professional Achievement Tracker</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js for Pie Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Styles & Theme Toggle Config -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Toast Notification for Theme Toggle Hint */
+        #theme-toast {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .toast-hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    </style>
+    <script>
+        // Configure Tailwind to use the 'class' strategy for dark mode
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="bg-slate-100 dark:bg-gray-900 text-slate-800 dark:text-slate-300">
+    <!-- Tailwind JIT Safelist -->
+    <div class="hidden">
+        <span class="bg-red-100 text-red-800 dark:bg-red-600 dark:text-white"></span>
+        <span class="bg-yellow-100 text-yellow-800 dark:bg-yellow-500 dark:text-gray-900"></span>
+        <span class="bg-green-100 text-green-800 dark:bg-green-500 dark:text-white"></span>
+        <span class="bg-blue-100 text-blue-800 dark:bg-blue-500 dark:text-white"></span>
+        <span class="bg-purple-100 text-purple-800 dark:bg-purple-500 dark:text-white"></span>
+        <span class="bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300"></span>
+    </div>
+
+    <!-- Theme Toggle Hint -->
+    <div id="theme-toast" class="fixed top-20 right-5 bg-white dark:bg-gray-700 text-slate-800 dark:text-white p-4 rounded-lg shadow-2xl z-50 flex items-center gap-4 toast-hidden">
+        <p class="text-sm font-medium">✨ New! Click the icon to toggle themes.</p>
+        <button id="close-toast" class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white">&times;</button>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" class="fixed top-6 right-6 z-50 p-2 rounded-full text-slate-500 dark:text-yellow-400 bg-slate-200 dark:bg-gray-800 hover:bg-slate-300 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900">
+        <svg id="theme-icon-sun" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg id="theme-icon-moon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+    </button>
+    
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 pt-20">
+
+        <!-- Header -->
+        <header class="mb-10 flex flex-col md:flex-row items-center gap-8">
+            <img src="-- Chasing Dreams -- 💫⭐.webp" alt="Profile Picture" class="w-40 h-40 rounded-full border-4 border-white dark:border-slate-700 shadow-lg object-cover object-[center_30%] flex-shrink-0">
+            <div class="flex-grow text-center md:text-left">
+                <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">2025 Professional Achievement Tracker</h1>
+                <div class="h-1 w-24 bg-teal-500 mt-4 rounded mx-auto md:mx-0"></div>
+                <p class="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-3xl">A comprehensive overview of projects, achievements, and professional growth throughout the year.</p>
+            </div>
+        </header>
+
+        <main class="space-y-12">
+
+            <!-- Projects & Deliverables Section -->
+            <section id="projects" class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-400 mb-6 border-b-2 border-blue-200 dark:border-blue-900/80 pb-2">Projects & Deliverables</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left text-slate-600 dark:text-slate-300">
+                        <thead class="text-xs text-slate-700 dark:text-slate-300 uppercase bg-slate-100 dark:bg-slate-700/50 rounded-t-lg">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Project Name</th>
+                                <th scope="col" class="px-6 py-3">Details</th>
+                                <th scope="col" class="px-6 py-3">Dates</th>
+                                <th scope="col" class="px-6 py-3">Impact</th>
+                                <th scope="col" class="px-6 py-3">Effort</th>
+                                <th scope="col" class="px-6 py-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data Rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Key Achievements Section -->
+            <section id="achievements">
+                <h2 class="text-2xl font-bold text-teal-700 dark:text-teal-400 mb-6 border-b-2 border-teal-200 dark:border-teal-900/80 pb-2">Key Achievements</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Q1 -->
+                    <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200 mb-3">Q1 (January - March)</h3>
+                        <p class="font-semibold text-slate-700 dark:text-slate-300">Major Win:</p>
+                        <p class="mb-3 text-slate-600 dark:text-slate-400">Got Recognition from the organization with certificates and Awards in the workshop.</p>
+                        <p class="font-semibold text-slate-700 dark:text-slate-300">Result:</p>
+                        <p class="text-slate-600 dark:text-slate-400">Boost in confidence and eagerness to learn and grow more.</p>
+                    </div>
+                    <!-- Q2 -->
+                    <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200 mb-3">Q2 (April - June)</h3>
+                        <p class="font-semibold text-slate-700 dark:text-slate-300">Major Win:</p>
+                        <p class="mb-3 text-slate-600 dark:text-slate-400">Started working on the Automation Environment Setup and Development.</p>
+                        <p class="font-semibold text-slate-700 dark:text-slate-300">Result:</p>
+                        <p class="text-slate-600 dark:text-slate-400">Created the setup, new scripts can be easily written for more modules.</p>
+                    </div>
+                    <!-- Q3 -->
+                    <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200 mb-3">Q3 (July - September)</h3>
+                        <p class="font-semibold text-slate-700 dark:text-slate-300">Major Win:</p>
+                        <p class="mb-3 text-slate-600 dark:text-slate-400">Successfully Created the Magazine with the Digital Marketing Team. And also successfully created the Testimonial Form in the Given Time.</p>
+                        <p class="font-semibold text-slate-700 dark:text-slate-300">Result:</p>
+                        <p class="text-slate-600 dark:text-slate-400">Magazine is ready to be published and the Testimonial form is ready for client distribution post-hosting.</p>
+                    </div>
+                    <!-- Q4 -->
+                    <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200 mb-3">Q4 (October - December)</h3>
+                        <p class="text-slate-500 italic">No entries yet.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Project Impact Overview -->
+            <section id="overview" class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <h2 class="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6 border-b-2 border-gray-200 dark:border-gray-700 pb-2 text-center">Project Impact Overview</h2>
+                <div class="max-w-md mx-auto">
+                    <canvas id="impactChart"></canvas>
+                </div>
+            </section>
+            
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 py-6 border-t border-slate-200 dark:border-slate-700">
+            <p class="text-sm text-slate-500 dark:text-slate-500">&copy; <span id="year"></span> Professional Achievement Tracker. All rights reserved.</p>
+        </footer>
+
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // --- Data for the projects table ---
+            const projects = [
+                { name: 'Automation Framework Development', details: 'Framework architecture, script development, CI/CD integration, reporting, team training.', startDate: 'May 19, 2025', endDate: '', impact: 'High', effort: 'Large', status: 'Completed' },
+                { name: 'CA Bank', details: 'Administration Module Testing', startDate: 'June 4, 2025', endDate: 'June 5, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'Magazine (Digital Marketing)', details: 'Photo Clicking and Meeting', startDate: 'June 4, 2025', endDate: 'June 6, 2025', impact: 'Medium', effort: 'Small', status: 'Completed' },
+                { name: 'Custom Form', details: 'Custom Form Brain Storming', startDate: 'June 5, 2025', endDate: '', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'CA Bank Automation', details: 'Test Scripts for 732 and Report Generation issue fix', startDate: 'June 9, 2025', endDate: 'June 9, 2025', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'IFTAS', details: 'NEFT ISO Response', startDate: 'June 9, 2025', endDate: 'June 9, 2025', impact: 'Medium', effort: 'Small', status: 'Completed' },
+                { name: 'CA Bank Automation', details: 'Test Script Development of 734', startDate: 'June 10, 2025', endDate: 'June 10, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'Digital Marketing', details: 'Form Creation', startDate: 'June 10, 2025', endDate: 'July 23, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'Digital Marketing', details: 'Form Creation: Save Logic Development and Design Changes', startDate: 'June 11, 2025', endDate: 'June 11, 2025', impact: 'Medium', effort: 'Large', status: 'Completed' },
+                { name: 'Automation Script', details: 'Few Changes done', startDate: 'June 11, 2025', endDate: 'June 11, 2025', impact: 'Medium', effort: 'Small', status: 'Completed' },
+                { name: 'Automation and Jenkins', details: 'Script and Jenkins Integration, brainstorming, and login test method implementation.', startDate: 'June 12, 2025', endDate: 'June 13, 2025', impact: 'High', effort: 'Large', status: 'Completed' },
+                { name: 'Digital Marketing (Magazine)', details: 'Magazine page Designing and Meeting attends', startDate: 'June 13, 2025', endDate: 'June 13, 2025', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'CA Bank Automation', details: 'Script Development 740', startDate: 'June 17, 2025', endDate: 'June 17, 2025', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'Shinhan Bank', details: 'Data Migration Testing', startDate: 'June 18, 2025', endDate: 'June 24, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'Shinhan Bank and SBM VAM', details: 'Data Migration Testing and VAM UAT Testing', startDate: 'June 19, 2025', endDate: 'June 19, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'Shinhan Bank', details: 'Document for testing flow after data migration', startDate: 'June 25, 2025', endDate: 'June 26, 2025', impact: 'Low', effort: 'Small', status: 'Completed' },
+                { name: 'Shinhan Bank', details: 'Bug Re-Testing', startDate: 'June 26, 2025', endDate: 'June 27, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'Digital Marketing', details: 'News Letter Creation', startDate: 'June 27, 2025', endDate: '', impact: 'Medium', effort: 'Small', status: 'Completed' },
+                { name: 'Shinhan Bank', details: 'Testing and Progress Update', startDate: 'July 7, 2025', endDate: '', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'SBM VAM', details: 'VAM BRD Document for Mode of Payment API', startDate: 'July 18, 2025', endDate: '', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'SBM VAM', details: 'UAT Transaction Testing and Training to the Bank Team', startDate: 'July 18, 2025', endDate: 'August 7, 2025', impact: 'High', effort: 'Large', status: 'Completed' },
+                { name: 'User Manual Creation', details: 'Created User Manual for almost all projects', startDate: '', endDate: '', impact: 'High', effort: 'Large', status: 'Completed' },
+                { name: 'Test Case Creation', details: 'Created Test Cases for almost all projects', startDate: '', endDate: '', impact: 'High', effort: 'Large', status: 'Completed' },
+                { name: 'Shinhan Bank', details: 'LC/BG Integration Testing', startDate: 'July 8, 2025', endDate: 'July 18, 2025', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'Shinhan Bank', details: 'IFSC Based Reports Testing', startDate: '', endDate: 'August 5, 2025', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'Digital Marketing', details: 'Proliferation Flyer Creation', startDate: 'August 6, 2025', endDate: 'August 7, 2025', impact: 'Medium', effort: 'Large', status: 'Completed' },
+                { name: 'IFTAS', details: 'Release Note Testing', startDate: 'August 19, 2025', endDate: 'August 19, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'IFTAS', details: 'Release Note Testing', startDate: 'August 21, 2025', endDate: 'August 25, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'HARCO', details: 'Front-end Testing', startDate: 'August 26, 2025', endDate: 'August 26, 2025', impact: 'Medium', effort: 'Small', status: 'Completed' },
+                { name: 'HARCO DCCB', details: 'Release Note Testing', startDate: 'August 27, 2025', endDate: 'August 27, 2025', impact: 'Medium', effort: 'Medium', status: 'Completed' },
+                { name: 'KANGRA', details: 'Release Note Testing', startDate: 'August 28, 2025', endDate: 'August 28, 2025', impact: 'High', effort: 'Medium', status: 'Completed' },
+                { name: 'KANGRA', details: 'Release Note Testing', startDate: 'August 29, 2025', endDate: 'August 29, 2025', impact: 'High', effort: 'Medium', status: 'Completed' },
+            ];
+            
+            // --- Helper function to format dates ---
+            function formatDate(dateStr) {
+                if (!dateStr) return 'N/A';
+                return new Date(dateStr).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+            
+            // --- Helper function to create badges ---
+            function createBadge(text, color) {
+                const lightColorClasses = {
+                    red: 'bg-red-100 text-red-800',
+                    yellow: 'bg-yellow-100 text-yellow-800',
+                    green: 'bg-green-100 text-green-800',
+                    blue: 'bg-blue-100 text-blue-800',
+                    purple: 'bg-purple-100 text-purple-800',
+                };
+                const darkColorClasses = {
+                    red: 'dark:bg-red-600 dark:text-white',
+                    yellow: 'dark:bg-yellow-500 dark:text-gray-900',
+                    green: 'dark:bg-green-500 dark:text-white',
+                    blue: 'dark:bg-blue-500 dark:text-white',
+                    purple: 'dark:bg-purple-500 dark:text-white',
+                };
+                
+                const lightClasses = lightColorClasses[color] || 'bg-slate-100 text-slate-800';
+                const darkClasses = darkColorClasses[color] || 'dark:bg-slate-700 dark:text-slate-300';
+                
+                return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${lightClasses} ${darkClasses}">${text}</span>`;
+            }
+            
+            // --- Populate the table ---
+            const tableBody = document.querySelector('#projects table tbody');
+            tableBody.innerHTML = ''; // Clear existing rows before populating
+            projects.forEach(p => {
+                const row = document.createElement('tr');
+                row.className = 'bg-white dark:bg-transparent border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors duration-200';
+                
+                const impactColor = { 'High': 'red', 'Medium': 'yellow', 'Low': 'green' }[p.impact];
+                const effortColor = { 'Large': 'red', 'Medium': 'blue', 'Small': 'green' }[p.effort];
+                const statusColor = { 'Completed': 'purple' }[p.status];
+    
+                let dateRange = formatDate(p.startDate);
+                if(p.endDate) {
+                     dateRange = `${formatDate(p.startDate)} - ${formatDate(p.endDate)}`;
+                } else if (p.startDate) {
+                    dateRange = `Started ${formatDate(p.startDate)}`;
+                } else {
+                    dateRange = "Ongoing";
+                }
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">${p.name}</td>
+                    <td class="px-6 py-4 max-w-sm">${p.details}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${dateRange}</td>
+                    <td class="px-6 py-4">${createBadge(p.impact, impactColor)}</td>
+                    <td class="px-6 py-4">${createBadge(p.effort, effortColor)}</td>
+                    <td class="px-6 py-4">${createBadge(p.status, statusColor)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+    
+            // --- Theme Toggle Logic ---
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const sunIcon = document.getElementById('theme-icon-sun');
+            const moonIcon = document.getElementById('theme-icon-moon');
+            const toast = document.getElementById('theme-toast');
+            const closeToastBtn = document.getElementById('close-toast');
+            let impactChart;
+    
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+                renderImpactChart();
+            }
+    
+            themeToggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                applyTheme(isDark ? 'dark' : 'light');
+            });
+    
+            // Check for saved theme on load
+            const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light theme
+            applyTheme(savedTheme);
+    
+            // Toast logic
+            if (!localStorage.getItem('themeToastDismissed')) {
+                setTimeout(() => {
+                    toast.classList.remove('toast-hidden');
+                }, 500);
+                
+                const dismissToast = () => {
+                    toast.classList.add('toast-hidden');
+                    localStorage.setItem('themeToastDismissed', 'true');
+                }
+                closeToastBtn.addEventListener('click', dismissToast);
+                setTimeout(dismissToast, 6000); // Auto-dismiss after 6 seconds
+            } else {
+                toast.style.display = 'none';
+            }
+    
+    
+            // --- Pie Chart Logic ---
+            function renderImpactChart() {
+                if (impactChart) {
+                    impactChart.destroy();
+                }
+    
+                const impactCounts = projects.reduce((acc, project) => {
+                    acc[project.impact] = (acc[project.impact] || 0) + 1;
+                    return acc;
+                }, {});
+    
+                const totalProjects = projects.length;
+                const impactData = {
+                    labels: ['Medium', 'High', 'Low'],
+                    values: [
+                        impactCounts['Medium'] || 0,
+                        impactCounts['High'] || 0,
+                        impactCounts['Low'] || 0
+                    ]
+                };
+                
+                const isDarkMode = document.documentElement.classList.contains('dark');
+                
+                const ctx = document.getElementById('impactChart').getContext('2d');
+                impactChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: impactData.labels,
+                        datasets: [{
+                            label: 'Project Impact',
+                            data: impactData.values,
+                            backgroundColor: [
+                                '#f59e0b', // amber-500 for Medium
+                                '#ef4444', // red-500 for High
+                                '#22c55e'  // green-500 for Low
+                            ],
+                            borderColor: isDarkMode ? '#1f2937' : '#ffffff', // gray-800 or white
+                            borderWidth: 5,
+                            hoverOffset: 10
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: isDarkMode ? '#d1d5db' : '#475569', // gray-300 or slate-600
+                                    padding: 25,
+                                    boxWidth: 15,
+                                    font: {
+                                        size: 14,
+                                        weight: '500'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            const percentage = (context.parsed / totalProjects * 100).toFixed(1);
+                                            label += `${context.raw} projects (${percentage}%)`;
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    plugins: [{
+                        id: 'centerText',
+                        beforeDraw: function(chart) {
+                            const { width, height, ctx } = chart;
+                            ctx.restore();
+                            
+                            // Main number
+                            const fontSize = (height / 100).toFixed(2);
+                            ctx.font = `bold ${fontSize}em sans-serif`;
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = isDarkMode ? '#f9fafb' : '#1e293b'; // gray-50 or slate-800
+    
+                            const text = totalProjects.toString();
+                            const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                            const textY = height / 2 - (height / 20);
+                            ctx.fillText(text, textX, textY);
+                            
+                            // "Total" text
+                            const subfontSize = (height / 220).toFixed(2);
+                            ctx.font = `500 ${subfontSize}em sans-serif`;
+                            ctx.fillStyle = isDarkMode ? '#9ca3af' : '#64748b'; // gray-400 or slate-500
+                            const subtext = "Total";
+                            const subtextX = Math.round((width - ctx.measureText(subtext).width) / 2);
+                            const subtextY = height / 2 + (height / 15);
+                            ctx.fillText(subtext, subtextX, subtextY);
+                            
+                            ctx.save();
+                        }
+                    }]
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
